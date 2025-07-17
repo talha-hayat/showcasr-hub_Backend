@@ -3,8 +3,9 @@ import connectDb from "./Src/Config/db.js"
 import dotenv from "dotenv";
 import authRoutes from "./Src/Routes/authroutes.js";
 import loanRoutes  from "./Src/Routes/loanRoute.js";
-import multer from "multer";
-import { storage } from "./Src/Config/cloudinry.js";
+// import multer from "multer";
+// import { storage } from "./Src/Config/cloudinry.js";
+import imageroutes from "./Src/Routes/image.routes.js";
 import cors from "cors";
 
 dotenv.config();
@@ -23,19 +24,23 @@ app.use("/api", authRoutes);
 app.use("/api/loans", loanRoutes);
 
 // upload image
-const upload = multer({ storage })
-app.post("/upload", upload.single("key"), (req, res) => {
-    try {
-        return res.status(201).json({
-            ImageUrl: req.file.path
-        })
-    } catch (error) {
-        res.status(500).status({
-            message: "Image not upload",
-            error: error.message
-        })
-    }
-})
+// const upload = multer({ storage })
+// app.post("/upload", upload.single("key"), (req, res) => {
+//     try {
+//         return res.status(201).json({
+//             ImageUrl: req.file.path
+//         })
+//     } catch (error) {
+//         res.status(500).status({
+//             message: "Image not upload",
+//             error: error.message
+//         })
+//     }
+// })
+
+app.use("/upload", imageroutes);
+
+
 
 // Start server
 const PORT = process.env.PORT || 5000;
