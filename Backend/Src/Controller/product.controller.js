@@ -1,17 +1,18 @@
-import Product from "../Model/product.model.js";
+import Product from "../Model/product.model.js"
 
-export const createproduct = async (req,res)=>{
+const createProduct = async (req, res) => {
     try {
-        const product = await Product.create(req.body);
+        const  product = await Product.create(req.body);
         return res.status(201).json({
             message: "Product created successfully",
-            product: product
-        })
-
-    } catch (error) {
-        res.status(500).json({
-            message: "An error occurred while creating product.",
-            error: error.message
+            product,
         });
-    }
+    } catch (error) {
+        return res.status(500).json({
+            message: "An error occurred while creating the product.",
+            error: error.message,
+    })
 }
+}
+
+export default createProduct;

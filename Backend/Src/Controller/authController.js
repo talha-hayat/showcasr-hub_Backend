@@ -21,7 +21,7 @@ export const signup = async (req, res) => {
     }
 
     // OTP generation 
-    const otp = Math.floor(Math.random()*1000)+100000; // Generate a 6-digit OTP
+    const otp = Math.floor(Math.random() * 1000) + 100000; // Generate a 6-digit OTP
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 1);
@@ -32,7 +32,7 @@ export const signup = async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      otp 
+      otp
     });
 
     const transformer = nodemailer.createTransport({
@@ -78,35 +78,35 @@ export const signup = async (req, res) => {
 export const verifyOtp = async (req, res) => {
   try {
     const { email, otp } = req.body;
-  const userExists = await User.find({ email });
-  if (!userExists) {
-    return res.status(404).json({ message: "User not found" });
-  }
+    const userExists = await User.find({ email });
+    if (!userExists) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-  // Check OTP
-  if (userExists[0].otp != otp) {
-    return res.status(400).json({ message: "Invalid OTP" });
-  }
-  // Update user status to active
-  User.isActive = true;
+    // Check OTP
+    if (userExists[0].otp != otp) {
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
+    // Update user status to active
+    User.isActive = true;
 
-  // User.save()
-  User.findOneAndUpdate({ email }, { isActive: true }, { new: true })
-    .then(() => {
-      console.log("User status updated successfully");
-    })
-    .catch((error) => {
-      console.error("Error updating user status:", error);
-    })
+    // User.save()
+    User.findOneAndUpdate({ email }, { isActive: true }, { new: true })
+      .then(() => {
+        console.log("User status updated successfully");
+      })
+      .catch((error) => {
+        console.error("Error updating user status:", error);
+      })
 
-  return res.status(201).json({
-     message: "Email verified successfully",
+    return res.status(201).json({
+      message: "Email verified successfully",
 
-  });
+    });
   } catch (error) {
     console.error("Error verifying OTP:", error);
     res.status(500).json({ message: "An error occured while verifying OTP" });
-    
+
   }
 
 }

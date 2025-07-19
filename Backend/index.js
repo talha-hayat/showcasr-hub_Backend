@@ -3,12 +3,9 @@ import connectDb from "./Src/Config/db.js"
 import dotenv from "dotenv";
 import authRoutes from "./Src/Routes/authroutes.js";
 import loanRoutes  from "./Src/Routes/loanRoute.js";
-// import multer from "multer";
-// import { storage } from "./Src/Config/cloudinry.js";
 import imageroutes from "./Src/Routes/image.routes.js";
 import cors from "cors";
-import productRoute from "./Src/Routes/product.routes.js";
-
+import productRoute from "./Src/Routes/product.route.js" 
 dotenv.config();
 
 const app = express();
@@ -40,8 +37,9 @@ app.use("/api/loans", loanRoutes);
 
 app.use("/upload", imageroutes);
 
-// Product routes  
-app.use("/product", productRoute);
+app.use("/products", productRoute);
+
+
 
 
 
