@@ -7,6 +7,7 @@ import loanRoutes  from "./Src/Routes/loanRoute.js";
 // import { storage } from "./Src/Config/cloudinry.js";
 import imageroutes from "./Src/Routes/image.routes.js";
 import cors from "cors";
+import productRoute from "./Src/Routes/product.routes.js";
 
 dotenv.config();
 
@@ -19,7 +20,6 @@ connectDb()
 
 // Routes
 app.use("/api", authRoutes);
-
 // Loan routes
 app.use("/api/loans", loanRoutes);
 
@@ -39,6 +39,9 @@ app.use("/api/loans", loanRoutes);
 // })
 
 app.use("/upload", imageroutes);
+
+// Product routes  
+app.use("/product", productRoute);
 
 
 
