@@ -1,6 +1,6 @@
 import Product from "../Model/product.model.js"
 
-const createProduct = async (req, res) => {
+export const createProduct = async (req, res) => {
     try {
         const  product = await Product.create(req.body);
         return res.status(201).json({
@@ -15,4 +15,12 @@ const createProduct = async (req, res) => {
 }
 }
 
-export default createProduct;
+export const getAllProducts = async (req, res) => {
+  try {
+    const products = await Product.find(); // Mongoose se data fetch
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
