@@ -24,3 +24,23 @@ export const getAllProducts = async (req, res) => {
   }
 };
 
+export const getProductsbyid = async (req, res) => {
+  try {
+    const id = req.params.id; // Get the product ID from the request parameters
+    const products = await Product.findById(id); // Mongoose se data fetch
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const deleteProductsbyid = async (req, res) => {
+  try {
+    const id = req.params.id; // Get the product ID from the request parameters
+    const products = await Product.findByIdAndDelete(id); // Mongoose se data fetch
+    res.status(200).json({message: "Product deleted successfully"});
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
