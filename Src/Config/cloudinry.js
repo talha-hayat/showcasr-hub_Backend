@@ -4,7 +4,7 @@ import { CloudinaryStorage } from 'multer-storage-cloudinary'
 // Configuration
 cloudinary.config({ 
      cloud_name: 'dnlffbrmd', 
-     api_key: '961472639614454', 
+     api_key: '568294819324323', 
      api_secret: process.env.CLOUDINARY_API // Click 'View API Keys' above to copy your API secret
 });
 

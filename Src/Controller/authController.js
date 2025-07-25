@@ -21,7 +21,10 @@ export const signup = async (req, res) => {
     }
 
     // OTP generation 
-    const otp = Math.floor(Math.random() * 1000) + 100000; // Generate a 6-digit OTP
+    // const otp = Math.floor(Math.random() * 1000) + 100000; 
+
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 1);
