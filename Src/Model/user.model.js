@@ -1,42 +1,50 @@
-import mongoose, { model, Schema } from "mongoose";
+// import mongoose, { Schema, model } from 'mongoose';
+
+import { model, Schema } from "mongoose";
 
 const userSchema = new Schema({
-  firstName: {
-    type: String
-  },
-  lastName: {
-    type: String
+  name: {
+    type: String,
+    required: true,
+    trim: true
   },
   email: {
     type: String,
     required: true,
+    unique: true,
+    lowercase: true,
+    trim: true
   },
-  phoneNo: {
-    type: String
-  },
-
-  profileImage: {
-    type:String
-  },
-
   password: {
     type: String,
-    required: true,
+    required: true
+  },
+  profileImage: {
+    type : String
+    // public_id: { type: String, default: '' },
+    // url: { type: String, default: '' }
+  },
+  otp: {
+    code: { type: String, default: null },
+    expiresAt: { type: Date, default: null }
+  },
+  isVerified: {
+    type: Boolean,
+    default: false
   },
   userType: {
     type: String,
+    enum: ['user', 'admin'],
     default: 'user'
   },
-  otp:{
-    type: String,
+  lastLogin: {
+    type: Date,
     default: null
-  },
-  isActive: {
-    type: Boolean,
-    default: false
   }
+}, {
+  timestamps: true // adds createdAt and updatedAt
 });
 
-const User = model("Auth", userSchema);
+const User = model('User', userSchema);
 
 export default User;

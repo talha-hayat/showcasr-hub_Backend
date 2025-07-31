@@ -5,7 +5,7 @@ import express from "express";
 const upload = multer({storage: storage});
 
 const router = express.Router();
-router.post("/", upload.single("key"), (req, res) => {
+router.post("/", upload.single("profileImage"), (req, res) => {
     try {
         const ImageUrl = req.file.path;
         return res.status(201).json({
