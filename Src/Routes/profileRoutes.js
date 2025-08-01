@@ -29,4 +29,5 @@ router.get('/profile', verifyToken, async (req, res) => {
   }
 });
 
+
 export default router;

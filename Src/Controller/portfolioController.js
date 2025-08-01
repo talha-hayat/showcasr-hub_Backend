@@ -457,14 +457,14 @@ export const toggleLike = async (req, res) => {
 
 // UPDATE PORTFOLIO
 export const updatePortfolio = async (req, res) => {
-  const { userId } = req.body;
   const { id } = req.params;
 
   try {
     const portfolio = await Portfolio.findById(id);
     if (!portfolio) return res.status(404).json({ message: 'Portfolio not found' });
 
-    if (portfolio.creatorId.toString() !== userId) {
+    // ✅ Use req.user.id (set by verifyToken middleware)
+    if (portfolio.creatorId.toString() !== req.user.id.toString()) {
       return res.status(403).json({ message: 'Unauthorized to update' });
     }
 
@@ -475,6 +475,7 @@ export const updatePortfolio = async (req, res) => {
     res.status(500).json({ message: 'Update failed', error: err.message });
   }
 };
+
 
 // DELETE PORTFOLIO
 export const deletePortfolio = async (req, res) => {
