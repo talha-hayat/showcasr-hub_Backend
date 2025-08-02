@@ -1,5 +1,3 @@
-// import mongoose, { Schema, model } from 'mongoose';
-
 import { model, Schema } from "mongoose";
 
 const userSchema = new Schema({
@@ -20,9 +18,13 @@ const userSchema = new Schema({
     required: true
   },
   profileImage: {
-    type : String
-    // public_id: { type: String, default: '' },
-    // url: { type: String, default: '' }
+    type: String
+  },
+  bio: {
+    type: String,
+    trim: true,
+    maxlength: [500, "Bio cannot exceed 500 characters"],
+    default: ""
   },
   otp: {
     code: { type: String, default: null },
@@ -42,7 +44,7 @@ const userSchema = new Schema({
     default: null
   }
 }, {
-  timestamps: true // adds createdAt and updatedAt
+  timestamps: true
 });
 
 const User = model('User', userSchema);

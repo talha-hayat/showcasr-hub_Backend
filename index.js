@@ -3,7 +3,7 @@ import connectDb from "./Src/Config/db.js";
 import dotenv from "dotenv";
 import authRoutes from "./Src/Routes/authroutes.js";
 import imageroutes from "./Src/Routes/image.routes.js";
-import dataRoute from "./Src/Routes/data.routes.js";
+// import dataRoute from "./Src/Routes/data.routes.js";
 import cors from "cors";
 import portfolioRoutes from "./Src/Routes/portfolioRoutes.js"
 import profileRoutes from "./Src/Routes/profileRoutes.js"
@@ -24,7 +24,7 @@ app.use("/auth", authRoutes);
 app.use("/upload", imageroutes);
 
 // data routes
-app.use("/data", dataRoute);
+// app.use("/data", dataRoute);
 
 app.use('/api/portfolios', portfolioRoutes);
 app.use("/api", profileRoutes)

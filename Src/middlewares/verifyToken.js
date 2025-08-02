@@ -2,10 +2,11 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 
 export const verifyToken = (req, res, next) => {
+  console.log("chala")
   const authHeader = req.headers.authorization;
 
   if (!authHeader?.startsWith('Bearer ')) {
-    return console.log("error")
+    console.log("error")
     return res.status(401).json({ message: 'Unauthorized' });
   }
 
