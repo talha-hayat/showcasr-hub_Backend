@@ -402,28 +402,32 @@ export const getPortfolioById = async (req, res) => {
 export const toggleLike = async (req, res) => {
   try {
     // Validate inputs
-    if (!req.user?.id) throw new Error('User not authenticated');
+    if (!req.user?.id) {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ message: 'Invalid portfolio ID' });
+      return res.status(400).json({ message: "Invalid portfolio ID" });
     }
 
-    // Find portfolio with proper error handling
+    // Find portfolio
     const portfolio = await Portfolio.findById(req.params.id);
-    if (!portfolio) return res.status(404).json({ message: 'Portfolio not found' });
+    if (!portfolio) {
+      return res.status(404).json({ message: "Portfolio not found" });
+    }
 
-    // Initialize likes array if undefined
-    if (!portfolio.likes) {
+    // Ensure likes is an array (schema default should handle this, but double-check)
+    if (!Array.isArray(portfolio.likes)) {
       portfolio.likes = [];
     }
 
-    // Clean likes array (remove null/undefined/invalid)
-    portfolio.likes = portfolio.likes.filter(like => 
+    // Clean likes array (remove invalid ObjectIds)
+    portfolio.likes = portfolio.likes.filter(like =>
       mongoose.Types.ObjectId.isValid(like)
     ).map(like => new mongoose.Types.ObjectId(like));
 
-    // Check existing like using proper ObjectId comparison
-    const userId = new mongoose.Types.ObjectId(req.user.id);
-    const likeIndex = portfolio.likes.findIndex(like => 
+    // Check if user has already liked the portfolio
+    const userId = req.user.id; // Already an ObjectId from verifyToken
+    const likeIndex = portfolio.likes.findIndex(like =>
       like.equals(userId)
     );
 
@@ -434,28 +438,28 @@ export const toggleLike = async (req, res) => {
       portfolio.likes.push(userId); // Like
     }
 
-    // Update counts and save
+    // Update likesCount and save
     portfolio.likesCount = portfolio.likes.length;
     await portfolio.save();
-    console.log(portfolio);
+
+    console.log("Portfolio after toggle:", portfolio);
 
     // Respond with complete state
     res.status(200).json({
-      message: likeIndex >= 0 ? 'Unliked' : 'Liked',
+      message: likeIndex >= 0 ? "Unliked" : "Liked",
       likesCount: portfolio.likesCount,
       isLikedByUser: likeIndex < 0,
       likes: portfolio.likes // For debugging
     });
-
   } catch (err) {
-    console.error('Like Error:', {
-      error: err,
+    console.error("Like Error:", {
+      error: err.message,
       userId: req.user?.id,
       portfolioId: req.params.id
     });
-    
-    res.status(500).json({ 
-      message: 'Like operation failed',
+
+    res.status(500).json({
+      message: "Like operation failed",
       error: err.message
     });
   }
