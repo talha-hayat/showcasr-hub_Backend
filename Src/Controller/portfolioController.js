@@ -411,13 +411,18 @@ export const toggleLike = async (req, res) => {
     const portfolio = await Portfolio.findById(req.params.id);
     if (!portfolio) return res.status(404).json({ message: 'Portfolio not found' });
 
+    // Initialize likes array if undefined
+    if (!portfolio.likes) {
+      portfolio.likes = [];
+    }
+
     // Clean likes array (remove null/undefined/invalid)
     portfolio.likes = portfolio.likes.filter(like => 
       mongoose.Types.ObjectId.isValid(like)
     ).map(like => new mongoose.Types.ObjectId(like));
 
     // Check existing like using proper ObjectId comparison
-    const userId = req.user.id;
+    const userId = new mongoose.Types.ObjectId(req.user.id);
     const likeIndex = portfolio.likes.findIndex(like => 
       like.equals(userId)
     );
@@ -432,6 +437,7 @@ export const toggleLike = async (req, res) => {
     // Update counts and save
     portfolio.likesCount = portfolio.likes.length;
     await portfolio.save();
+    console.log(portfolio);
 
     // Respond with complete state
     res.status(200).json({
