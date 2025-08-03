@@ -23,7 +23,7 @@ export const verifyToken = (req, res, next) => {
       ...decoded,
       id: new mongoose.Types.ObjectId(decoded.userId) // Ensure proper ObjectId
     };
-    console.log(req.user)
+    // console.log(req.user)
     next();
   } catch (error) {
     return res.status(401).json({ 

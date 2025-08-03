@@ -21,16 +21,25 @@ const portfolioSchema = new Schema({
   },
   imageUrls: [{
     type: String,
-    trim: true
+    trim: true,
+    default: [] // Ensure empty array by default
   }],
   category: {
+    type: String,
+    trim: true
+  },
+  preview: {
+    type: String,
+    trim: true
+  },
+  source: {
     type: String,
     trim: true
   },
   likes: [{
     type: Schema.Types.ObjectId,
     ref: "User",
-    default: [] // Ensure likes is an empty array by default
+    default: [] // Ensure empty array by default
   }],
   likesCount: {
     type: Number,
@@ -44,10 +53,33 @@ const portfolioSchema = new Schema({
     type: Date,
     default: Date.now
   },
+  creator:{
+    name:{
+      type : String 
+    },
+    avatar:{
+      type: String
+    }
+  },
   updatedAt: {
     type: Date,
     default: Date.now
   }
+});
+
+// Update updatedAt on save
+portfolioSchema.pre('save', function (next) {
+  this.updatedAt = Date.now();
+  next();
+});
+
+// Populate creatorId automatically in queries
+portfolioSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'creatorId',
+    select: 'name avatar' // Select name and avatar from User model
+  });
+  next();
 });
 
 const Portfolio = model("Portfolio", portfolioSchema);

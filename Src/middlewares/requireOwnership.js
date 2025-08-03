@@ -1,9 +1,10 @@
-import PortfolioModel from "../Model/Portfolio.model.js";
+import Portfolio from "../Model/Portfolio.model.js";
 
 export const requireOwnership = async (req, res, next) => {
   try {
     // 1. Get portfolio
-    const portfolio = await PortfolioModel.findById(req.params.id);
+    const portfolio = await Portfolio.findById(req.params.id);
+    // console.log(portfolio.creatorId._id)
 
     if (!portfolio) {
       return res.status(404).json({ message: "Portfolio not found." });
@@ -15,7 +16,7 @@ export const requireOwnership = async (req, res, next) => {
     }
 
     // 3. Check ownership
-    if (portfolio.creatorId.toString() !== req.user.id.toString()) {
+    if (portfolio.creatorId._id.toString() !== req.user.id.toString()) {
       return res.status(403).json({ message: "You do not own this portfolio." });
     }
 

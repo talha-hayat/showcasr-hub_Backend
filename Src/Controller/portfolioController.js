@@ -1,4 +1,4 @@
-// import Portfolio from '../Model/Portfolio.model.js';
+import Portfolio from '../Model/Portfolio.model.js';
 
 // // CREATE PORTFOLIO
 // // export const createPortfolio = async (req, res) => {
@@ -32,39 +32,39 @@
 // //   }
 // // };
 
-// export const createPortfolio = async (req, res) => {
-//   try {
-//     const {
-//       title,
-//       description,
-//       thumbnailUrl,
-//       imageUrls,
-//       category,
-//       creatorId,
-//       creator,
-//       preview,
-//       source,
-//     } = req.body;
+export const createPortfolio = async (req, res) => {
+  try {
+    const {
+      title,
+      description,
+      thumbnailUrl,
+      imageUrls,
+      category,
+      creatorId,
+      creator,
+      preview,
+      source,
+    } = req.body;
 
-//     const newPortfolio = new Portfolio({
-//       title,
-//       description,
-//       thumbnailUrl,
-//       imageUrls,
-//       category,
-//       creatorId,
-//       creator,
-//       preview, 
-//       source,  
-//     });
+    const newPortfolio = new Portfolio({
+      title,
+      description,
+      thumbnailUrl,
+      imageUrls,
+      category,
+      creatorId,
+      creator,
+      preview, 
+      source,  
+    });
 
-//     await newPortfolio.save();
-//     return res.status(201).json({ success: true, data: newPortfolio });
-//   } catch (error) {
-//     console.error('Create Portfolio Error:', error);
-//     return res.status(500).json({ success: false, message: 'Server Error' });
-//   }
-// };
+    await newPortfolio.save();
+    return res.status(201).json({ success: true, data: newPortfolio });
+  } catch (error) {
+    console.error('Create Portfolio Error:', error);
+    return res.status(500).json({ success: false, message: 'Server Error' });
+  }
+};
 
 // // GET ALL PORTFOLIOS
 // // export const getAllPortfolios = async (req, res) => {
@@ -269,42 +269,72 @@
 
 
 import mongoose from 'mongoose';
-import Portfolio from '../Model/Portfolio.model.js';
+// import Portfolio from '../Model/Portfolio.model.js';
+// import User from '../Model/user.model.js';
 
 // CREATE PORTFOLIO
-export const createPortfolio = async (req, res) => {
-  try {
-    const {
-      title,
-      description,
-      thumbnailUrl,
-      imageUrls,
-      category,
-      creatorId,
-      creator,
-      preview,
-      source,
-    } = req.body;
+// export const createPortfolio = async (req, res) => {
+//   try {
+//     const {
+//       title,
+//       description,
+//       thumbnailUrl,
+//       imageUrls,
+//       category,
+//       creatorId,
+//       preview,
+//       source
+//     } = req.body;
 
-    const newPortfolio = new Portfolio({
-      title,
-      description,
-      thumbnailUrl,
-      imageUrls,
-      category,
-      creatorId,
-      creator,
-      preview,
-      source,
-    });
+//     // Validate required fields
+//     if (!title || !creatorId) {
+//       return res.status(400).json({ success: false, message: "Title and creatorId are required" });
+//     }
 
-    await newPortfolio.save();
-    return res.status(201).json({ success: true, data: newPortfolio });
-  } catch (error) {
-    console.error('Create Portfolio Error:', error);
-    return res.status(500).json({ success: false, message: 'Server Error' });
-  }
-};
+//     // Validate creatorId
+//     if (!mongoose.Types.ObjectId.isValid(creatorId)) {
+//       return res.status(400).json({ success: false, message: "Invalid creatorId" });
+//     }
+
+//     // Check if creator exists
+//     const creator = await User.findById(creatorId);
+//     if (!creator) {
+//       return res.status(404).json({ success: false, message: "Creator not found" });
+//     }
+//     return console.log(creator)
+
+//     // Create new portfolio
+//     const newPortfolio = new Portfolio({
+//       title,
+//       description,
+//       thumbnailUrl,
+//       imageUrls: imageUrls || [], // Default to empty array if not provided
+//       category,
+//       creatorId,
+//       preview,
+//       source,
+//       likes: [], // Explicitly set to empty array
+//       likesCount: 0, // Explicitly set to 0
+//       viewsCount: 0 // Explicitly set to 0
+//     });
+
+//     console.log("New Portfolio:", newPortfolio);
+
+//     // Save portfolio
+//     await newPortfolio.save();
+
+//     // Populate creatorId for response
+//     const populatedPortfolio = await Portfolio.findById(newPortfolio._id).populate({
+//       path: 'creatorId',
+//       select: 'name avatar' // Select name and avatar from User model
+//     });
+
+//     return res.status(201).json({ success: true, data: populatedPortfolio });
+//   } catch (error) {
+//     console.error("Create Portfolio Error:", error);
+//     return res.status(500).json({ success: false, message: "Server Error", error: error.message });
+//   }
+// };
 
 // GET ALL PORTFOLIOS (with pagination, filtering, and like status)
 export const getAllPortfolios = async (req, res) => {
@@ -489,14 +519,17 @@ export const updatePortfolio = async (req, res) => {
 
 // DELETE PORTFOLIO
 export const deletePortfolio = async (req, res) => {
-  const { userId } = req.body;
   const { id } = req.params;
+  const userId = req.user?.id; // Assuming middleware sets req.user.id
+  console.log('userId from middleware:', userId);
 
   try {
     const portfolio = await Portfolio.findById(id);
     if (!portfolio) return res.status(404).json({ message: 'Portfolio not found' });
 
-    if (portfolio.creatorId.toString() !== userId) {
+    if (portfolio.creatorId._id.toString() !== userId.toString()) {
+      console.log('portfolio.creatorId._id:', portfolio.creatorId._id.toString());
+      console.log('userId:', userId);
       return res.status(403).json({ message: 'Unauthorized to delete' });
     }
 
