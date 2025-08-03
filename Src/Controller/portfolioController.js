@@ -504,7 +504,9 @@ export const updatePortfolio = async (req, res) => {
     if (!portfolio) return res.status(404).json({ message: 'Portfolio not found' });
 
     // ✅ Use req.user.id (set by verifyToken middleware)
-    if (portfolio.creatorId.toString() !== req.user.id.toString()) {
+    if (portfolio.creatorId._id.toString() !== req.user.id.toString()) {
+      console.log("portfolio.creatorId: ",portfolio.creatorId._id.toString())
+      console.log("req.user.id: ", req.user.id.toString())
       return res.status(403).json({ message: 'Unauthorized to update' });
     }
 
@@ -521,15 +523,15 @@ export const updatePortfolio = async (req, res) => {
 export const deletePortfolio = async (req, res) => {
   const { id } = req.params;
   const userId = req.user?.id; // Assuming middleware sets req.user.id
-  console.log('userId from middleware:', userId);
+  // console.log('userId from middleware:', userId);
 
   try {
     const portfolio = await Portfolio.findById(id);
     if (!portfolio) return res.status(404).json({ message: 'Portfolio not found' });
 
     if (portfolio.creatorId._id.toString() !== userId.toString()) {
-      console.log('portfolio.creatorId._id:', portfolio.creatorId._id.toString());
-      console.log('userId:', userId);
+      // console.log('portfolio.creatorId._id:', portfolio.creatorId._id.toString());
+      // console.log('userId:', userId);
       return res.status(403).json({ message: 'Unauthorized to delete' });
     }
 
